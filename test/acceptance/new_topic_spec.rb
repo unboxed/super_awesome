@@ -1,6 +1,6 @@
 require_relative "./spec_helper"
 
-describe "New Topic", :type => :feature do
+describe "New Topic", type: :feature do
   before {
     visit "/topic/new"
   }
@@ -26,6 +26,27 @@ describe "New Topic", :type => :feature do
     click_button 'Make Topic'
 
     expect(current_path).to include('/topic/1')
-    expect(page).to have_content('cuttlefish are cute')
+  end 
+end
+
+describe "Submitting a form", type: :feature do
+
+  before do
+    visit "/topic/new"
+    fill_in 'description', with: 'lunch is good?'
+    click_button 'Make Topic'
   end
+
+  it "should display the topic description" do
+    expect(page).to have_content('lunch is good?')
+  end
+
+  it "should persist the topic description between requests" do
+    expect(page).to have_content('lunch is good?')
+
+    visit "/topic/1"
+
+    expect(page).to have_content('lunch is good?')
+  end
+
 end
