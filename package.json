@@ -12,6 +12,7 @@
     "coffee-script": "^1.7.1",
     "mocha": "^1.18.0",
     "chai": "^1.9.0",
-    "nodemon": "^1.0.15"
+    "nodemon": "^1.0.15",
+    "express": "^3.4.8"
   }
 }

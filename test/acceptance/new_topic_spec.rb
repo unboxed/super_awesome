@@ -26,6 +26,6 @@ describe "New Topic", :type => :feature do
     click_button 'Make Topic'
 
     expect(current_path).to include('/topic/1')
-    expect(page).to have_content('<p>cuttlefish are cute</p>')
+    expect(page).to have_content('cuttlefish are cute')
   end
 end
