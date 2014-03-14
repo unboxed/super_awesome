@@ -28,9 +28,22 @@ app.get '/topic/new', (req, res) ->
   #   'Content-Type': 'text/html'
   # res.end new_topic_template()
 
+app.post '/topic/:id/choice', (req, res) ->
+  console.log "called #{req.method}: #{req.url}"
+  id = (parseInt req.params.id) - 1
+
+  if !topics[id].choices?
+    topics[id].choices = []
+  
+  topics[id].choices.push req.body.choice
+
+  res.writeHead HTTP_REDIRECT,
+    'Location': "/topic/1/result"
+  res.end()
+
 app.post '/topic', (req, res) ->
   console.log "called #{req.method}: #{req.url}"
-  topics.push req.body.description
+  topics.push {description: req.body.description}
   res.writeHead HTTP_REDIRECT,
     'Location': "/topic/1"
   res.end()
@@ -39,9 +52,14 @@ app.get '/topic/:id', (req, res) ->
   console.log "called #{req.method}: #{req.url}"
   id = (parseInt req.params.id) - 1
   if topics[id]?
-    res.render 'show_topic', { description: topics[id], id: (id + 1) }
+    res.render 'show_topic', { description: topics[id].description, id: (id + 1) }
   else
     res.render 'topic_not_found', {}
+
+app.get '/topic/:id/result', (req, res) ->
+  console.log "called #{req.method}: #{req.url}"
+  id = (parseInt req.params.id) - 1
+  res.render 'show_topic_result', {choices: topics[id].choices}
 
   # res.writeHead HTTP_SUCCESS, 
   #   'Content-Type': 'text/html'

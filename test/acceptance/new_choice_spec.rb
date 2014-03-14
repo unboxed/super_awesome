@@ -19,3 +19,25 @@ describe "New Choice", type: :feature do
 end
 
 
+describe "Submitting a choice", type: :feature do
+
+  before do
+    visit "/topic/new"
+    fill_in 'description', with: 'do you like cheese'
+    click_button 'Make Topic'
+
+    fill_in 'choice', with: 'who doesnt!'
+    click_button 'Vote on topic'
+  end
+
+  it "redirects to the topic result page" do
+    expect(current_path).to eq('/topic/1/result')
+  end
+
+  it "displays my choice submission" do
+    expect(page).to have_content('who doesnt!')
+  end
+
+end
+
+

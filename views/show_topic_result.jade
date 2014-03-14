@@ -1,0 +1,7 @@
+extends layout
+
+block body
+  ul
+  - for (var i = 0; i < choices.length; ++i) {
+    li= choices[i]
+  - }
