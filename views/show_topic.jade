@@ -1,0 +1,8 @@
+extends layout 
+
+block body
+  p= description
+    form(method="POST" action="/topic/"+id+"/choice")
+      input(type="text" id="choice" name="choice" placeholder="type choice here")
+      button(type="submit") Vote on topic
+      

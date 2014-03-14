@@ -12,6 +12,6 @@ describe "Teardown", type: :feature do
 
     visit "/topic/1"
 
-    expect(page).to have_content("undefined")
+    expect(page).to have_content("Topic Not Found")
   end
 end

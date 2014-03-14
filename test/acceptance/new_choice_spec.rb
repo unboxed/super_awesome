@@ -17,3 +17,5 @@ describe "New Choice", type: :feature do
   end
 
 end
+
+

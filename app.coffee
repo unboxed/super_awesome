@@ -9,19 +9,24 @@ PORT = 8124
 LOCALHOST = "127.0.0.1"
 HTTP_SUCCESS = 200
 HTTP_REDIRECT = 301
- 
+
+# Express config 
 app.use express.bodyParser()
+app.engine 'jade', require('jade').__express
+app.set 'view engine', 'jade'
+app.set 'views', __dirname + '/views'
 
 app.get '/teardown', (req, res) ->
   console.log "called #{req.method}: #{req.url}"
   topics = []
-  res.end()
+  res.end("Success")
 
 app.get '/topic/new', (req, res) -> 
   console.log "called #{req.method}: #{req.url}"
-  res.writeHead HTTP_SUCCESS, 
-    'Content-Type': 'text/html'
-  res.end new_topic_template()
+  res.render 'new_topic', {}
+  # res.writeHead HTTP_SUCCESS, 
+  #   'Content-Type': 'text/html'
+  # res.end new_topic_template()
 
 app.post '/topic', (req, res) ->
   console.log "called #{req.method}: #{req.url}"
@@ -33,9 +38,14 @@ app.post '/topic', (req, res) ->
 app.get '/topic/:id', (req, res) ->
   console.log "called #{req.method}: #{req.url}"
   id = (parseInt req.params.id) - 1
-  res.writeHead HTTP_SUCCESS, 
-    'Content-Type': 'text/html'
-  res.end show_topic_template(topics[id], id)
+  if topics[id]?
+    res.render 'show_topic', { description: topics[id], id: (id + 1) }
+  else
+    res.render 'topic_not_found', {}
+
+  # res.writeHead HTTP_SUCCESS, 
+  #   'Content-Type': 'text/html'
+  # res.end show_topic_template(topics[id], id)
  
 app.listen PORT, LOCALHOST
 

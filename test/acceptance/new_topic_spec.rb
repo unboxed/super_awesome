@@ -6,7 +6,7 @@ describe "New Topic", type: :feature do
   }
 
   it "returns html" do
-    expect(page.response_headers['Content-Type']).to eq('text/html')
+    expect(page.response_headers['Content-Type']).to include('text/html')
   end
 
   it "contains a description textarea" do
