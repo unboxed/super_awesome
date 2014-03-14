@@ -38,6 +38,14 @@ describe "Submitting a choice", type: :feature do
     expect(page).to have_content('who doesnt!')
   end
 
+  it "counts multiple submissions of the same choice" do
+    visit "/topic/1"
+    fill_in 'choice', with: 'who doesnt!'
+    click_button 'Vote on topic'
+
+    expect(page).to have_content('2')
+  end
+
 end
 
 

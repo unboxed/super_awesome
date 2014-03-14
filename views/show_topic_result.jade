@@ -2,6 +2,6 @@ extends layout
 
 block body
   ul
-  - for (var i = 0; i < choices.length; ++i) {
-    li= choices[i]
-  - }
+  each count, choice in results
+    li= choice + ' ' + count
+  

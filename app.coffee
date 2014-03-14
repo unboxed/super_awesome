@@ -59,7 +59,16 @@ app.get '/topic/:id', (req, res) ->
 app.get '/topic/:id/result', (req, res) ->
   console.log "called #{req.method}: #{req.url}"
   id = (parseInt req.params.id) - 1
-  res.render 'show_topic_result', {choices: topics[id].choices}
+
+  results = {}
+
+  for choice in topics[id].choices
+    if results[choice]?
+      ++results[choice]
+    else
+      results[choice] = 1
+
+  res.render 'show_topic_result', {results: results}
 
   # res.writeHead HTTP_SUCCESS, 
   #   'Content-Type': 'text/html'
