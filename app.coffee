@@ -1,7 +1,6 @@
 http = require 'http'
 express = require 'express'
 topics = []
-{ new_topic: new_topic_template, show_topic: show_topic_template } = require './templates'
  
 app = express()
 
