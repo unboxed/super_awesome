@@ -36,15 +36,13 @@ app.post '/topic/:id/choice', (req, res) ->
   
   topics[id].choices.push req.body.choice
 
-  res.writeHead HTTP_REDIRECT,
-    'Location': "/topic/1/result"
+  res.redirect '/topic/1/result'
   res.end()
 
 app.post '/topic', (req, res) ->
   console.log "called #{req.method}: #{req.url}"
   topics.push {description: req.body.description}
-  res.writeHead HTTP_REDIRECT,
-    'Location': "/topic/1"
+  res.redirect '/topic/1'
   res.end()
 
 app.get '/topic/:id', (req, res) ->
