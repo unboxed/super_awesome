@@ -17,11 +17,6 @@ app.set 'view engine', 'jade'
 app.set 'views', __dirname + '/views'
 app.use(express.static(__dirname + '/public'));
 
-app.get '/teardown', (req, res) ->
-  console.log "called #{req.method}: #{req.url}"
-  topics = []
-  res.end("Success")
-
 app.get '/polls/new', (req, res) -> 
   console.log "called #{req.method}: #{req.url}"
   res.render 'polls/new', {}
@@ -65,6 +60,10 @@ app.get '/polls/:uuid', (req, res) ->
 
       res.render 'polls/show', { description: poll.get('description'), uuid: poll.get('uuid') }
 
+    .catch ->
+
+      res.render 'not_found'
+
 
 app.get '/polls/:uuid/results', (req, res) ->
   console.log "called #{req.method}: #{req.url}"
@@ -83,6 +82,8 @@ app.get '/polls/:uuid/results', (req, res) ->
 
           res.render 'polls/results', {poll_description: poll.get('description'), results: results}
 
+app.get '/', (req, res) ->
+  res.redirect '/polls/new'
  
 app.listen PORT, LOCALHOST
 
