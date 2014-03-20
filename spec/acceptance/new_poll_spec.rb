@@ -1,8 +1,8 @@
 require_relative "./spec_helper"
 
-describe "New Topic", type: :feature do
+describe "New Poll", type: :feature do
   before {
-    visit "/topic/new"
+    visit "/polls/new"
   }
 
   it "returns html" do
@@ -23,18 +23,18 @@ describe "New Topic", type: :feature do
 
   it "submits the form somewhere" do
     fill_in 'description', with: 'cuttlefish are cute'
-    click_button 'Make Topic'
+    click_button 'Make Poll'
 
-    expect(current_path).to include('/topic/1')
+    expect(current_path).to match(/\/polls\/[a-z0-9-]+?/)
   end 
 end
 
 describe "Submitting a form", type: :feature do
 
   before do
-    visit "/topic/new"
+    visit "/polls/new"
     fill_in 'description', with: 'lunch is good?'
-    click_button 'Make Topic'
+    click_button 'Make Poll'
   end
 
   it "should display the topic description" do
@@ -44,7 +44,7 @@ describe "Submitting a form", type: :feature do
   it "should persist the topic description between requests" do
     expect(page).to have_content('lunch is good?')
 
-    visit "/topic/1"
+    visit current_path
 
     expect(page).to have_content('lunch is good?')
   end

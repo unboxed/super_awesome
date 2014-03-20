@@ -1,75 +1,88 @@
 http = require 'http'
 express = require 'express'
 topics = []
- 
+
+Poll = require './lib/poll'
+Vote = require './lib/vote'
+
 app = express()
 
 PORT = 8124
 LOCALHOST = "127.0.0.1"
-HTTP_SUCCESS = 200
-HTTP_REDIRECT = 301
 
 # Express config 
 app.use express.bodyParser()
 app.engine 'jade', require('jade').__express
 app.set 'view engine', 'jade'
 app.set 'views', __dirname + '/views'
+app.use(express.static(__dirname + '/public'));
 
 app.get '/teardown', (req, res) ->
   console.log "called #{req.method}: #{req.url}"
   topics = []
   res.end("Success")
 
-app.get '/topic/new', (req, res) -> 
+app.get '/polls/new', (req, res) -> 
   console.log "called #{req.method}: #{req.url}"
-  res.render 'new_topic', {}
-  # res.writeHead HTTP_SUCCESS, 
-  #   'Content-Type': 'text/html'
-  # res.end new_topic_template()
+  res.render 'polls/new', {}
 
-app.post '/topic/:id/choice', (req, res) ->
+
+app.post '/polls/:uuid/choice', (req, res) ->
   console.log "called #{req.method}: #{req.url}"
-  id = (parseInt req.params.id) - 1
 
-  if !topics[id].choices?
-    topics[id].choices = []
-  
-  topics[id].choices.push req.body.choice
+  new Poll(uuid: req.params.uuid)
+  .fetch()
+  .then (poll) ->
 
-  res.redirect '/topic/1/result'
-  res.end()
+    new Vote(poll_id: poll.get('id'), value: req.body.choice)
+      .save()
+      .then (vote) ->
 
-app.post '/topic', (req, res) ->
+        res.redirect '/polls/' + poll.get('uuid') + '/results'
+        res.end()
+
+
+app.post '/polls', (req, res) ->
   console.log "called #{req.method}: #{req.url}"
-  topics.push {description: req.body.description}
-  res.redirect '/topic/1'
-  res.end()
 
-app.get '/topic/:id', (req, res) ->
+  new Poll({description: req.body.description})
+    .save()
+    .then (poll) ->
+
+      new Poll(id: poll.get('id'))
+        .fetch()
+        .then (poll) ->
+
+          res.redirect '/polls/'+poll.get('uuid')
+          res.end()
+
+app.get '/polls/:uuid', (req, res) ->
   console.log "called #{req.method}: #{req.url}"
-  id = (parseInt req.params.id) - 1
-  if topics[id]?
-    res.render 'show_topic', { description: topics[id].description, id: (id + 1) }
-  else
-    res.render 'topic_not_found', {}
 
-app.get '/topic/:id/result', (req, res) ->
+  new Poll(uuid: req.params.uuid)
+    .fetch()
+    .then (poll) ->
+
+      res.render 'polls/show', { description: poll.get('description'), uuid: poll.get('uuid') }
+
+
+app.get '/polls/:uuid/results', (req, res) ->
   console.log "called #{req.method}: #{req.url}"
-  id = (parseInt req.params.id) - 1
 
-  results = {}
+  new Poll(uuid: req.params.uuid)
+    .fetch()
+    .then (poll) ->
 
-  for choice in topics[id].choices
-    if results[choice]?
-      ++results[choice]
-    else
-      results[choice] = 1
+      qb = (new Vote).query()
+      qb
+        .where('votes.poll_id', '=', poll.get('id'))
+        .groupBy('votes.value')
+        .select('votes.value')
+        .count('votes.id')
+        .then (results) ->
 
-  res.render 'show_topic_result', {results: results}
+          res.render 'polls/results', {poll_description: poll.get('description'), results: results}
 
-  # res.writeHead HTTP_SUCCESS, 
-  #   'Content-Type': 'text/html'
-  # res.end show_topic_template(topics[id], id)
  
 app.listen PORT, LOCALHOST
 

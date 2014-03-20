@@ -1,10 +1,10 @@
-extends layout
+extends ../layout
 
 block body
   p#welcome
     | Welcome to 'Super Awesome' type in a description of your topic below
-  form(method="POST" action="/topic")
+  form(method="POST" action="/polls")
     textarea(id="description" name="description")
     br
-    button(type="submit") Make Topic
+    button(type="submit") Make Poll
 
