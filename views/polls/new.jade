@@ -2,9 +2,10 @@ extends ../layout
 
 block body
   p#welcome
-    | Welcome to 'Super Awesome' type in a description of your topic below
+    | Welcome to 'Super Awesome'!
+    | Type in a description of your poll below.
   form(method="POST" action="/polls")
-    textarea(id="description" name="description")
+    textarea(id="description" name="description" class="form-control")
     br
-    button(type="submit") Make Poll
+    button(type="submit" class="btn btn-success") Make Poll
 

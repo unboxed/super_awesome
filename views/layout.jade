@@ -2,9 +2,13 @@ doctype html
 html(lang="en")
   head
     title Super Awesome
-    link(rel='stylesheet' href='/css/foundation.min.css')
+    link(rel='stylesheet' href='//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css')
     link(rel='stylesheet' href='/css/style.css')
   body
-    block body
-  footer
-    a(href='/polls/new') New Poll
+    div.above_the_footer
+      header#main
+      div.container
+        block body
+  footer#main
+    div.container
+      a(href='/') Super Awesome
