@@ -22,65 +22,56 @@ app.get '/polls/new', (req, res) ->
   res.render 'polls/new', {}
 
 
-app.post '/polls/:uuid/choice', (req, res) ->
+app.post '/polls/:uuid/votes', (req, res) ->
   console.log "called #{req.method}: #{req.url}"
 
-  new Poll(uuid: req.params.uuid)
-  .fetch()
-  .then (poll) ->
-
-    new Vote(poll_id: poll.get('id'), value: req.body.choice)
-      .save()
-      .then (vote) ->
-
-        res.redirect '/polls/' + poll.get('uuid') + '/results'
-        res.end()
+  Poll.findByUuid req.params.uuid, (poll) ->
+    Vote.create {poll_id: poll.id, value: req.body.choice}, (vote) ->
+      res.redirect '/polls/' + poll.uuid + '/results'
 
 
 app.post '/polls', (req, res) ->
   console.log "called #{req.method}: #{req.url}"
 
-  new Poll({description: req.body.description})
-    .save()
-    .then (poll) ->
+  Poll.create req.body.description, (uuid) ->
+    res.redirect '/polls/' + uuid
 
-      new Poll(id: poll.get('id'))
-        .fetch()
-        .then (poll) ->
-
-          res.redirect '/polls/'+poll.get('uuid')
-          res.end()
 
 app.get '/polls/:uuid', (req, res) ->
   console.log "called #{req.method}: #{req.url}"
 
-  new Poll(uuid: req.params.uuid)
-    .fetch()
-    .then (poll) ->
+  Poll.findByUuid req.params.uuid, (poll) ->
+    if(typeof(poll) == 'undefined')
+      res.end 'Not Found'
+    else
+      res.render 'polls/show', { description: poll.description, uuid: poll.uuid }
 
-      res.render 'polls/show', { description: poll.get('description'), uuid: poll.get('uuid') }
 
-    .catch ->
+app.get '/polls/:uuid/results.json', (req, res) ->
+  console.log "called #{req.method}: #{req.url}"
 
-      res.render 'not_found'
+  Poll.findByUuid req.params.uuid, (poll) ->
+    Vote.resultsData poll.id, (results) ->
 
+      data = {
+        labels : results.map (elem) -> elem.value
+        datasets : [
+          {
+            data : results.map (elem) -> elem.cnt
+          }
+        ]
+      }
+
+      res.set 'Content-Type', 'application/json'
+      res.send data
+      res.end
 
 app.get '/polls/:uuid/results', (req, res) ->
   console.log "called #{req.method}: #{req.url}"
 
-  new Poll(uuid: req.params.uuid)
-    .fetch()
-    .then (poll) ->
+  Poll.findByUuid req.params.uuid, (poll) ->
+    res.render 'polls/results', { poll_description: poll.description }
 
-      qb = (new Vote).query()
-      qb
-        .where('votes.poll_id', '=', poll.get('id'))
-        .groupBy('votes.value')
-        .select('votes.value')
-        .count('votes.id')
-        .then (results) ->
-
-          res.render 'polls/results', {poll_description: poll.get('description'), results: results}
 
 app.get '/', (req, res) ->
   res.redirect '/polls/new'

@@ -1,14 +1,6 @@
-Bookshelf = require 'bookshelf'
+Knex = require 'knex'
+database_config = require '../config/database'
 
-Db = Bookshelf.initialize({
-  client: 'pg',
-  connection: {
-    host     : '127.0.0.1',
-    user     : 'henry.turner',
-    password : '',
-    database : 'super_awesome_test',
-    charset  : 'utf8'
-  }
-})
+Db = Knex.initialize(database_config)
 
 module.exports = Db

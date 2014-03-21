@@ -1,8 +1,22 @@
 extends ../layout
 
 block body
-  p= poll_description
-  ul
-  each result in results
-    li= result.count + ' ' + result.value
+  div#resultsContainer
+
+    p= poll_description
+
+    br
+
+    canvas(id="resultsChart" width="500" height="500")
+    
+  script.
+    $.getJSON( window.location.pathname + ".json", function( data ) {
+      var ctx = document.getElementById("resultsChart").getContext("2d");
+      new Chart(ctx).Bar(data, {
+        scaleOverride : true,
+        scaleSteps : Math.max.apply(Math, data.datasets[0].data),
+        scaleStepWidth : 1,
+        scaleStartValue : 0
+      });
+    });
   

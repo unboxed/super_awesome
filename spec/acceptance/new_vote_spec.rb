@@ -36,19 +36,6 @@ describe "Submitting a choice", type: :feature do
     expect(current_path).to match(/\/polls\/[a-z0-9-]+?\/results/)
   end
 
-  it "displays my choice submission" do
-    expect(page).to have_content('who doesnt!')
-  end
-
-  it "counts multiple submissions of the same choice" do
-    visit @show_path
-    
-    fill_in 'choice', with: 'who doesnt!'
-    click_button 'Vote'
-
-    expect(page).to have_content('2')
-  end
-
 end
 
 
