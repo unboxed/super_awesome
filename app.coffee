@@ -76,7 +76,7 @@ app.get '/polls/:uuid/results', (req, res) ->
 app.get '/', (req, res) ->
   res.redirect '/polls/new'
  
-app.listen PORT, LOCALHOST
+app.listen(process.env.PORT || 5000, LOCALHOST)
 
 console.log "Server running at #{LOCALHOST}, #{PORT}"
 
