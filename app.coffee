@@ -52,7 +52,7 @@ app.get '/polls/:uuid/results.json', (req, res) ->
     Vote.resultsData poll.id, (results) ->
 
       data = {
-        labels : results.map (elem) -> elem.value
+        labels : results.map (elem) -> elem.val
         datasets : [
           {
             data : results.map (elem) -> elem.cnt
