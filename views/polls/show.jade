@@ -1,7 +1,7 @@
 extends ../layout
 
 block body
-  p= description
+  p!= description.replace(/\n/g,"<br />")
     form(method="POST" action="/polls/"+uuid+"/votes")
       input(type="text" id="choice" name="choice" placeholder="Your say here" class="form-control")
       br

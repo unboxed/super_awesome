@@ -3,7 +3,7 @@ extends ../layout
 block body
   div#resultsContainer
 
-    p= poll_description
+    p!= poll_description.replace(/\n/g,"<br />")
 
     br
 

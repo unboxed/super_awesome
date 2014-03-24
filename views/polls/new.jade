@@ -1,11 +1,14 @@
 extends ../layout
 
 block body
-  p#welcome
-    | Welcome to 'Super Awesome'!
-    | Type in a description of your poll below.
+  div#welcome
+    p.lead Create a poll where you can vote with text!
+    p.text-muted ... so if you want sensible results, consider hinting at how you want people to respond.
+
+  br
+
   form(method="POST" action="/polls")
-    textarea(id="description" name="description" class="form-control")
+    textarea(id="description" name="description" class="form-control" placeholder="Describe your poll...")
     br
     button(type="submit" class="btn btn-success") Make Poll
 

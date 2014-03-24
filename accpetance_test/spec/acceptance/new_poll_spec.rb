@@ -14,7 +14,7 @@ describe "New Poll", type: :feature do
   end
 
   it "contains a welcome intro message" do
-    expect(page).to have_css("p#welcome")
+    expect(page).to have_css("div#welcome")
   end
 
   it "contains a submit button" do
