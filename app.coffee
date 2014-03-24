@@ -1,6 +1,5 @@
 http = require 'http'
 express = require 'express'
-topics = []
 
 Poll = require './lib/poll'
 Vote = require './lib/vote'
@@ -8,7 +7,6 @@ Vote = require './lib/vote'
 app = express()
 
 PORT = 8124
-LOCALHOST = "127.0.0.1"
 
 # Express config 
 app.use express.bodyParser()
@@ -76,7 +74,7 @@ app.get '/polls/:uuid/results', (req, res) ->
 app.get '/', (req, res) ->
   res.redirect '/polls/new'
  
-port = process.env.PORT || 8124
+port = process.env.PORT || PORT
 
 app.listen(port)
 
